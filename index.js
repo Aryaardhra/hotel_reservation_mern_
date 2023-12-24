@@ -22,9 +22,19 @@ connectDB();
 const _filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(_filename);
 
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "/client/build")));
+  
+    app.get("*", (req, res) =>
+      res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+    );
+  } else {
+    app.get("/", (req, res) => {
+      res.send("API is running..");
+    });
+  }
 app.use(cors());
-app.use(express.static(path.join(__dirname, "./client/build")));
-app.get('*', (req,res) => res.sendFile(path.join(__dirname, "./client/build/index.html")));
+
 
 app.get("/", (req, res) => {
     res.send("health ok !!!")
